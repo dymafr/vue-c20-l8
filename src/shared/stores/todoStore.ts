@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { Todo } from '../interfaces/todo.interface';
+import { Filter } from '../types';
 import {
   fetchTodo,
   addTodo,
@@ -9,18 +10,32 @@ import {
 
 interface TodoState {
   todos: Todo[];
+  filter: Filter;
 }
 
 export const useTodos = defineStore('todos', {
   state: (): TodoState => ({
     todos: [],
+    filter: 'all',
   }),
   getters: {
     todoList(state: TodoState) {
       return state.todos;
     },
+    filteredTodoList(state: TodoState): Todo[] {
+      if (state.filter === 'all') {
+        return this.todoList;
+      } else if (state.filter === 'done') {
+        return this.todoList.filter((t) => t.done);
+      } else {
+        return this.todoList.filter((t) => !t.done);
+      }
+    },
   },
   actions: {
+    updateFilter(filter: Filter) {
+      this.filter = filter;
+    },
     async fetchTodo() {
       const todos = await fetchTodo();
       if (Array.isArray(todos)) {

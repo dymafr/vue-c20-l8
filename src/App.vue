@@ -1,13 +1,24 @@
 <template>
   <div class="p-20 d-flex justify-content-center">
     <div class="card container">
-      <h1 class="mb-20">Todo List</h1>
+      <div class="d-flex align-items-center mb-20">
+        <h1 class="flex-fill">Todo List</h1>
+        <select :value="todoStore.filter" @change="updateFilter($event)">
+          <option value="all">Toutes</option>
+          <option value="done">Finies</option>
+          <option value="ondoing">En cours</option>
+        </select>
+      </div>
       <div class="d-flex align-items-center">
         <input v-model="input" type="text" class="flex-fill mr-20" />
         <button class="btn btn-primary mr-20" @click="addTodo">Ajouter</button>
       </div>
       <ul>
-        <li v-for="todo in todoStore.todoList" class="card" :key="todo.content">
+        <li
+          v-for="todo in todoStore.filteredTodoList"
+          class="card"
+          :key="todo.content"
+        >
           <div
             class="d-flex align-items-center"
             v-if="!todo.editMode"
@@ -44,6 +55,7 @@
 import { ref } from 'vue';
 import { useTodos } from './shared/stores/todoStore';
 import { Todo } from './shared/interfaces/todo.interface';
+import { Filter } from './shared/types';
 import TodoForm from './components/TodoForm.vue';
 
 const input = ref<string>('');
@@ -62,6 +74,11 @@ function deleteTodo(todoId: string) {
 
 function updateTodo(todoId: string, update: Partial<Todo>) {
   todoStore.updateTodo(todoId, update);
+}
+
+function updateFilter(event: Event) {
+  const target = event.target as HTMLSelectElement;
+  todoStore.updateFilter(target.value as Filter);
 }
 </script>
 
