@@ -23,4 +23,6 @@ const emit = defineEmits<{
 const input = ref<string>(props.content);
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+</style>
